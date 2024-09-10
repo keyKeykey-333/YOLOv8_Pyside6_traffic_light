@@ -23,7 +23,8 @@ class YOLOv8Detector(QObject):
         self.running = False
         self.model = YOLO(self.args.model_path)
         self.frame_number=0
-        self.yolo_train_names=['down','person','mouse']
+        # self.yolo_train_names=['down','person','mouse','red','green','yellow','off','wait']
+        self.yolo_train_names=['red','green','yellow','off','wait']
         self.frame_count=0
         # self.last_emit_time = time.time()
     def yolov8detector_workstart_func(self):
@@ -90,17 +91,17 @@ class YOLOv8Detector(QObject):
                 boxes = result.boxes  # 获取所有边界框
                 if boxes is not None:
                     for box in boxes:
-                        if box.cls == 2:  # 假设类别ID 0 代表“人”
-                            x1, y1, x2, y2 = box.xyxy[0]  # 获取边界框的坐标
-                            # items = [QTableWidgetItem(str(self.current_frame)),QTableWidgetItem(self.yolo_train_names[int(box.cls.item())]),QTableWidgetItem(f"{x1:.2f}, {y1:.2f}, {x2:.2f}, {y2:.2f}"),QTableWidgetItem(self.args.model_path),QTableWidgetItem(self.args.input_video_path)]
-                            items = [str(self.current_frame),self.yolo_train_names[int(box.cls.item())],f"{x1:.2f}, {y1:.2f}, {x2:.2f}, {y2:.2f}",self.args.model_path,self.args.input_video_path]
-                            # current_time = time.time()
-                            # if current_time - self.last_emit_time >= 5:
-                                # self.last_emit_time = current_time
-                                # print(self.current_frame)
-                            # if self.frame_count>int(fps/2.0):
-                                # self.frame_count=0
-                            self.table_list_signal.emit(items)
+                        # if box.cls == 2:  # 假设类别ID 0 代表“人”
+                        x1, y1, x2, y2 = box.xyxy[0]  # 获取边界框的坐标
+                        # items = [QTableWidgetItem(str(self.current_frame)),QTableWidgetItem(self.yolo_train_names[int(box.cls.item())]),QTableWidgetItem(f"{x1:.2f}, {y1:.2f}, {x2:.2f}, {y2:.2f}"),QTableWidgetItem(self.args.model_path),QTableWidgetItem(self.args.input_video_path)]
+                        items = [str(self.current_frame),self.yolo_train_names[int(box.cls.item())],f"{x1:.2f}, {y1:.2f}, {x2:.2f}, {y2:.2f}",self.args.model_path,self.args.input_video_path]
+                        # current_time = time.time()
+                        # if current_time - self.last_emit_time >= 5:
+                            # self.last_emit_time = current_time
+                            # print(self.current_frame)
+                        # if self.frame_count>int(fps/2.0):
+                            # self.frame_count=0
+                        self.table_list_signal.emit(items)
 
             self.frame_number += 1
             qimage = self.convert_cv_to_qimage(annotated_frame)
